@@ -7,7 +7,7 @@
 apt-get update
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
 chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubec
+sudo mv ./kubectl /usr/local/bin/kubectl
 apt-get update &&  sudo apt-get install docker.io -y
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
 minikube version
@@ -16,10 +16,7 @@ apt install conntrack
 minikube start --vm-driver=none
 minikube version
 kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
-#if get any error related to kubectl comand run once 
-curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-mv ./kubectl /usr/local/bin/kubectl
+
 
 # Run app
 kubectl apply -f https://k8s.io/examples/application/nginx-app.yaml
