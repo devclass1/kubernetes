@@ -35,3 +35,62 @@ spec:
   selector:
     app: nginx
   type: LoadBalancer
+
+
+  ##################################################################################
+  Explanation
+  ##################################################################################
+This YAML file is used to deploy and expose an Nginx application on Kubernetes. It defines two Kubernetes resources: a ReplicaSet and a Service. Here's a breakdown:
+
+1. ReplicaSet
+The ReplicaSet ensures that the specified number of pod replicas are always running.
+
+Key Components:
+apiVersion: apps/v1: Specifies the API version of the ReplicaSet resource.
+kind: ReplicaSet: Declares the resource type as a ReplicaSet.
+metadata:
+name: nginx-replicaset: Names the ReplicaSet nginx-replicaset.
+spec:
+replicas: 3: Specifies the desired number of pods (3 in this case).
+selector:
+matchLabels:: Selects pods with the label app: nginx to be managed by this ReplicaSet.
+template:: Defines the template for creating new pods if replicas are missing.
+metadata:
+labels:: Adds the label app: nginx to each pod.
+spec:
+containers:: Specifies the container(s) to run in the pod.
+name: nginx: Names the container nginx.
+image: nginx:1.14.2: Uses the Nginx container image version 1.14.2.
+ports:: Exposes port 80 inside the container for HTTP traffic.
+What Happens:
+The ReplicaSet ensures that exactly 3 Nginx pods are running at all times. If a pod fails, it will create a new one to maintain the desired state.
+
+2. Service
+The Service exposes the ReplicaSet to allow external or internal access to the pods.
+
+Key Components:
+apiVersion: v1: Specifies the API version of the Service resource.
+kind: Service: Declares the resource type as a Service.
+metadata:
+name: nginx-service: Names the Service nginx-service.
+namespace: default: Places the Service in the default namespace.
+labels:
+app: nginx: Adds a label to the Service for identification.
+spec:
+externalTrafficPolicy: Local: Ensures traffic is routed to the node hosting the target pod.
+ports:: Defines the ports for the Service.
+name: http: Names the port http.
+port: 80: Exposes port 80 on the Service.
+protocol: TCP: Specifies TCP as the protocol.
+targetPort: 80: Forwards traffic to port 80 of the targeted pods.
+selector:: Selects pods with the label app: nginx.
+type: LoadBalancer: Makes the Service accessible externally by provisioning a LoadBalancer.
+What Happens:
+The Service uses a LoadBalancer to expose the Nginx application to external clients. It forwards incoming requests on port 80 of the LoadBalancer to port 80 of the pods selected by the label app: nginx.
+
+Workflow
+Deployment:
+The ReplicaSet ensures 3 Nginx pods are running with the specified configuration.
+Service Exposure:
+The Service exposes these pods to external clients using a LoadBalancer.
+Requests sent to the LoadBalancer's IP on port 80 are forwarded to the pods.
