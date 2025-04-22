@@ -63,3 +63,24 @@ spec:
   policyTypes:
   - Ingress
   ingress: []
+  ##################################################
+  Now Allow Specific Port from source
+  ###################################################
+  # allow-nginx-a.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-nginx-a
+  namespace: netpol-demo
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx-b
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: nginx-a
+
