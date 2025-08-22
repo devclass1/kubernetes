@@ -1,0 +1,56 @@
+# Defines the API version for Kubernetes object schema (v1 is core API)
+apiVersion: v1
+
+# Specifies this is a Pod resource (smallest deployable unit in Kubernetes)
+kind: Pod
+
+# Metadata section for identifying the Pod
+metadata:
+  # Name of the Pod
+  name: httpd
+  # Labels for identifying and selecting this Pod
+  labels:
+        app: httpd
+
+# Specification of the Pod's desired state
+spec:
+  # List of containers to run in the Pod
+  containers:
+  # Container definition
+  - name: httpd  # Name of the container
+    image: httpd:latest  # Docker image to use (Apache HTTP server latest version)
+    ports:
+    # Container port to expose (Apache HTTP default port)
+    - containerPort: 80
+
+# YAML document separator - starts definition of a new Kubernetes object
+---
+
+# Service API version (v1 is core API)
+apiVersion: v1
+
+# Specifies this is a Service resource (network abstraction for Pods)
+kind: Service
+
+# Metadata section for identifying the Service
+metadata:
+  name: httpd  # Name of the Service
+  namespace: default  # Kubernetes namespace (default if not specified)
+  labels:
+    app: httpd  # Labels for the Service
+
+# Specification of the Service's desired behavior
+spec:
+  # Preserves client source IP (routes traffic to local node if possible)
+  externalTrafficPolicy: Local
+  # List of ports the Service should expose
+  ports:
+  - name: http  # Name of the port
+    port: 80  # Port the Service exposes
+    protocol: TCP  # Network protocol
+    targetPort: 80  # Port on the Pod containers to forward traffic to
+  # Selector to find which Pods this Service should target
+  selector:
+    app: httpd  # Matches Pods with label app=httpd
+  # Service type that exposes externally via cloud provider's load balancer
+  type: LoadBalancer
